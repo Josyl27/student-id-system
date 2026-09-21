@@ -83,6 +83,7 @@ p{margin:0}
 /* forms */
 label.f{display:flex;flex-direction:column;gap:4px;font-size:.84rem;font-weight:600}
 label.f small{font-weight:400;color:var(--muted)}
+textarea{resize:vertical}
 input[type=text],input[type=password],input[type=email],input[type=date],input[type=url],input[type=search],select,textarea{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:8px 10px;width:100%;font-weight:400}
 input:disabled,select:disabled{opacity:.6}
 .fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
@@ -107,10 +108,10 @@ td .acts{display:flex;gap:10px;flex-wrap:wrap}
 
 /* id preview */
 .idcard{width:100%;max-width:300px;aspect-ratio:54/85.6;border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.15),0 8px 24px rgba(0,0,0,.12);background:#fff;display:block}
-.cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
 .cardgrid figure{margin:0}
 .cardgrid figcaption{font-size:.8rem;margin-top:6px}
-.tpl{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+.tpl{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:20px;align-items:start}
 .tpl .previewcol{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
 .lockbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 16px;border-radius:var(--radius)}
 .lockbar.locked{background:var(--ok-soft);color:var(--ok)}
@@ -152,6 +153,9 @@ dl.kv dd{margin:0;font-weight:600}
 .log td:first-child{white-space:nowrap;color:var(--muted)}
 .spin{padding:60px;text-align:center;color:var(--muted)}
 #printArea{display:none}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.pair .idcard{max-width:none;border-radius:6px}
+.center-t{text-align:center;margin-top:4px}
 
 @media (max-width:900px){
   .app{grid-template-columns:1fr}
@@ -170,8 +174,9 @@ dl.kv dd{margin:0;font-weight:600}
 @media print{
   body.printing > *:not(#printArea){display:none !important}
   body.printing #printArea{display:block}
-  #printArea .sheet{display:flex;flex-wrap:wrap;gap:6mm;page-break-after:always}
-  #printArea img{width:54mm;height:85.6mm;border:0.1mm solid #bbb}
-  @page{size:A4;margin:12mm}
+  #printArea .sheet{display:grid;grid-template-columns:repeat(3,54mm);grid-auto-rows:85.6mm;gap:6mm;justify-content:center;padding-top:6mm;break-after:page;page-break-after:always}
+  #printArea .sheet.back{direction:rtl} /* mirrored so backs line up on double-sided printing */
+  #printArea img{width:54mm;height:85.6mm;border:0.1mm solid #bbb;display:block}
+  @page{size:A4;margin:0}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

@@ -28,8 +28,8 @@
     if(!r) return fail("No student ID matches this code.");
     out.innerHTML = `<p class="muted small">${esc(r.school_name)}</p><h1 style="margin-top:4px">Student ID verification</h1>
       <dl class="kv" style="margin-top:16px">
-        <dt>Student ID</dt><dd>${esc(r.student_id)}</dd><dt>Name</dt><dd>${esc(r.name)}</dd>
-        <dt>Course</dt><dd>${esc(r.course)}</dd><dt>Year level</dt><dd>${esc(r.year_level)}</dd>
+        <dt>LRN</dt><dd>${esc(r.lrn)}</dd><dt>Name</dt><dd>${esc(r.name)}</dd>
+        <dt>Grade and section</dt><dd>${esc(r.grade_section)}</dd>
         <dt>Status</dt><dd>${esc(r.status)}</dd><dt>School year</dt><dd>${esc(r.school_year)}</dd>
       </dl>
       <div class="badge ${r.valid ? "valid" : "invalid"}">${r.valid ? "✓ Valid student ID" : "✕ This ID is not valid"}</div>
