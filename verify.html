@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Student ID Verification</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪪</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="center"><div class="panel verify" id="out"><p class="muted">Checking ID…</p></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+(async () => {
+  const out = document.getElementById("out");
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const code = new URLSearchParams(location.search).get("c") || "";
+  const fail = msg => out.innerHTML = `<h1>Student ID verification</h1><div class="badge invalid">✕ ${msg}</div>`;
+  if(!/^[a-z0-9]{8,64}$/i.test(code)) return fail("This QR code isn't a valid student ID code.");
+  try{
+    const sb = window.supabase.createClient(APP_CONFIG.SUPABASE_URL, APP_CONFIG.SUPABASE_ANON_KEY);
+    const { data, error } = await sb.rpc("verify_student", { code });
+    if(error) throw error;
+    const r = data && data[0];
+    if(!r) return fail("No student ID matches this code.");
+    out.innerHTML = `<p class="muted small">${esc(r.school_name)}</p><h1 style="margin-top:4px">Student ID verification</h1>
+      <dl class="kv" style="margin-top:16px">
+        <dt>Student ID</dt><dd>${esc(r.student_id)}</dd><dt>Name</dt><dd>${esc(r.name)}</dd>
+        <dt>Course</dt><dd>${esc(r.course)}</dd><dt>Year level</dt><dd>${esc(r.year_level)}</dd>
+        <dt>Status</dt><dd>${esc(r.status)}</dd><dt>School year</dt><dd>${esc(r.school_year)}</dd>
+      </dl>
+      <div class="badge ${r.valid ? "valid" : "invalid"}">${r.valid ? "✓ Valid student ID" : "✕ This ID is not valid"}</div>
+      <p class="muted small" style="margin-top:12px">Checked ${new Date().toLocaleString()}</p>`;
+  }catch(e){ console.error(e); fail("Couldn't reach the verification service. Try again shortly."); }
+})();
+</script>
+</body>
+</html>
