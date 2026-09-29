@@ -120,20 +120,26 @@
     if (a.frontBg) { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height); cover(ctx, a.frontBg, 0, 0, W_MM, H_MM); }
     else drawDefaultFront(ctx, color);
 
-    if (a.logo && T.show_watermark !== false) { ctx.save(); ctx.globalAlpha = .12; contain(ctx, a.logo, 3, 21, 48, 48); ctx.restore(); }
+    // When the uploaded artwork already carries the school header and logos, don't print them twice.
+    const headerInArtwork = !!a.frontBg && T.header_in_artwork !== false;
 
-    const halo = { halo: "rgba(255,255,255,.9)", haloW: .35 };
-    line(ctx, String(T.school_name || "").toUpperCase(), 27, 9.9, 49.5, 4.39, 700, F.serif, "center", halo);
-    // Address lines and the School ID are one block: same size, same spacing, so they can never collide.
-    const addr = String(T.school_address || "").toUpperCase().split(/\n/).map(x => x.trim()).filter(Boolean).slice(0, 2);
-    if (T.school_id_no) addr.push("SCHOOL ID: " + T.school_id_no);
-    const addrTop = 12.5, addrLead = 2.15;   // first baseline, then line spacing
-    addr.forEach((l, i) => line(ctx, l, 27, addrTop + i * addrLead, 44, 1.5, 700, F.serif, "center", { halo: "rgba(255,255,255,.8)", haloW: .3 }));
+    if (!headerInArtwork) {
+      if (a.logo && T.show_watermark !== false) { ctx.save(); ctx.globalAlpha = .12; contain(ctx, a.logo, 3, 21, 48, 48); ctx.restore(); }
+
+      const halo = { halo: "rgba(255,255,255,.9)", haloW: .35 };
+      line(ctx, String(T.school_name || "").toUpperCase(), 27, 9.9, 49.5, 4.39, 700, F.serif, "center", halo);
+
+      // Address lines and the School ID are one block: same size, same spacing, so they can never collide.
+      const addr = String(T.school_address || "").toUpperCase().split(/\n/).map(x => x.trim()).filter(Boolean).slice(0, 2);
+      if (T.school_id_no) addr.push("SCHOOL ID: " + T.school_id_no);
+      const addrTop = 12.5, addrLead = 2.15;   // first baseline, then line spacing
+      addr.forEach((l, i) => line(ctx, l, 27, addrTop + i * addrLead, 44, 1.5, 700, F.serif, "center", { halo: "rgba(255,255,255,.8)", haloW: .3 }));
+    }
 
     // photo — nothing is drawn when there is none, so no frame or placeholder prints
     if (a.photo) cover(ctx, a.photo, 2, 23, 32, 33);
-    if (a.logo) contain(ctx, a.logo, 34.6, 26.2, 14.6, 14.6);
-    if (a.logo2) contain(ctx, a.logo2, 35.2, 42, 13.4, 8);
+    if (!headerInArtwork && a.logo) contain(ctx, a.logo, 34.6, 26.2, 14.6, 14.6);
+    if (!headerInArtwork && a.logo2) contain(ctx, a.logo2, 35.2, 42, 13.4, 8);
 
     if (a.studentSig) { ctx.save(); ctx.globalCompositeOperation = "multiply"; contain(ctx, a.studentSig, 14.5, 56.6, 25, 7.4); ctx.restore(); }
 
