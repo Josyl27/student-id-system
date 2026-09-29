@@ -145,8 +145,8 @@
 
     const n = nameParts(s);
     line(ctx, n.last.toUpperCase() + (n.last ? "," : ""), 27, 68.7, 50, 5.87, 700, F.serif, "center", { halo: "rgba(255,255,255,.85)", haloW: .3, minSize: 3.1 });
-    line(ctx, [n.first, n.initial].filter(Boolean).join(" ").toUpperCase(), 27, 73.35, 40, 3.45, 700, F.serif, "center", { halo: "rgba(255,255,255,.85)", haloW: .28, underline: true, ulW: .25, minSize: 2.2 });
-    line(ctx, "LRN NO: " + (s.student_id || ""), 27, 81.4, 42, 3.3, 700, F.cond, "center", { halo: "rgba(255,255,255,.85)", haloW: .3, minSize: 2.6 });
+    line(ctx, [n.first, n.initial].filter(Boolean).join(" ").toUpperCase(), 27, 72.5, 40, 3.45, 700, F.serif, "center", { halo: "rgba(255,255,255,.85)", haloW: .28, underline: true, ulW: .25, minSize: 2.2 });
+    line(ctx, "LRN NO: " + (s.student_id || ""), 27, 81.4, 42, 3.30, 700, F.cond, "center", { halo: "rgba(255,255,255,.85)", haloW: .3, minSize: 2.6 });
     return canvas;
   }
 
