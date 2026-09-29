@@ -382,7 +382,8 @@ VIEWS.template = () => {
         <div class="panel stack"><h2>Front: background</h2>
           <div class="f"><span class="small" style="font-weight:600">Green design color</span><div class="swatch"><input type="color" name="primary_color" value="${esc(T.primary_color)}" ${dis} aria-label="Green design color"><span class="small muted">${esc(T.primary_color)}</span></div></div>
           ${imgSlot("front_bg","Front artwork","Built-in green design")}
-          <p class="muted small">Optional. Upload the exact background artwork (54 × 85.6 mm, portrait) to replace the built-in green design.</p>
+          ${check("header_in_artwork","The artwork already shows the school name, address, School ID and logos")}
+          <p class="muted small">Optional. Upload the exact background artwork (54 × 85.6 mm, portrait) to replace the built-in green design. Leave the box above ticked so the header isn't printed twice on top of it.</p>
         </div>
         <div class="panel stack"><h2>Back</h2>
           <label class="f">Validity note<textarea name="validity_text" rows="3" ${dis}>${esc(T.validity_text)}</textarea></label>
