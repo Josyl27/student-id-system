@@ -424,7 +424,7 @@ after.template = () => {
     const k=e.target.dataset.img, f=e.target.files[0], err=validateImage(f,8); if(err) return toast(err,"err");
     try{
       S.template[k] = k==="signature" ? await blobToDataURL(await cleanSignature(f))
-                    : /_bg$/.test(k) ? await downscale(f,1300,"image/jpeg") : await downscale(f,700);
+                    : /_bg$/.test(k) ? await downscale(f,1300,"auto") : await downscale(f,700);
     }catch(x){ return toast(x.message || "Couldn't read that image.","err"); }
     S.tplDirty=true; render();
   }));
@@ -483,8 +483,20 @@ function validateImage(file,maxMB=10){
 }
 const blobToDataURL = b => new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(b); });
 async function blobImg(blob){ const url=await blobToDataURL(blob), img=await loadImg(url); imgCache.delete(url); if(!img) throw new Error("Couldn't read that image. Use a JPG or PNG."); return img; }
+// True when the image really uses transparency, so it has to stay a PNG.
+function hasTransparency(img){
+  const c=document.createElement("canvas"), s=Math.min(1,240/Math.max(img.width,img.height));
+  c.width=Math.max(1,Math.round(img.width*s)); c.height=Math.max(1,Math.round(img.height*s));
+  const g=c.getContext("2d"); g.drawImage(img,0,0,c.width,c.height);
+  try{ const d=g.getImageData(0,0,c.width,c.height).data;
+    for(let i=3;i<d.length;i+=4) if(d[i]<250) return true;
+  }catch{}
+  return false;
+}
+// type "auto": keep PNG when the picture is see-through, otherwise JPEG to keep the file small.
 async function downscale(file,maxPx,type="image/png"){
   const img=await blobImg(file), s=Math.min(1,maxPx/Math.max(img.width,img.height)), c=document.createElement("canvas");
+  if(type==="auto") type = hasTransparency(img) ? "image/png" : "image/jpeg";
   c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
   const g=c.getContext("2d"); if(type==="image/jpeg"){ g.fillStyle="#fff"; g.fillRect(0,0,c.width,c.height); }
   g.drawImage(img,0,0,c.width,c.height);
